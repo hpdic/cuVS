@@ -74,6 +74,16 @@ auto create_algo(const std::string& algo_name,
 
   if constexpr (std::is_same_v<T, uint8_t>) {}
 
+#ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
+  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> ||
+                std::is_same_v<T, uint8_t> || std::is_same_v<T, int8_t>) {
+    if (algo_name == "cuvs_certex") {
+      typename cuvs::bench::cuvs_certex<T>::build_param param;
+      parse_build_param<T>(conf, param);
+      a = std::make_unique<cuvs::bench::cuvs_certex<T>>(metric, dim, param);
+    }
+  }
+#endif
 #ifdef CUVS_ANN_BENCH_USE_CUVS_IVF_FLAT
   if constexpr (std::is_same_v<T, float> || std::is_same_v<T, uint8_t> ||
                 std::is_same_v<T, int8_t>) {
@@ -156,6 +166,16 @@ auto create_search_param(const std::string& algo_name, const nlohmann::json& con
   if (algo_name == "raft_brute_force" || algo_name == "cuvs_brute_force") {
     auto param = std::make_unique<typename cuvs::bench::cuvs_gpu<T>::search_param>();
     return param;
+  }
+#endif
+#ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
+  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> ||
+                std::is_same_v<T, uint8_t> || std::is_same_v<T, int8_t>) {
+    if (algo_name == "cuvs_certex") {
+      auto param = std::make_unique<typename cuvs::bench::cuvs_certex<T>::search_param>();
+      parse_search_param<T>(conf, *param);
+      return param;
+    }
   }
 #endif
 #ifdef CUVS_ANN_BENCH_USE_CUVS_IVF_FLAT

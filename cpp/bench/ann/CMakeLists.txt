@@ -33,6 +33,7 @@ option(CUVS_ANN_BENCH_USE_CUVS_IVF_SQ "Include cuVS ivf sq algorithm in benchmar
 option(CUVS_ANN_BENCH_USE_CUVS_IVF_PQ "Include cuVS ivf pq algorithm in benchmark" ON)
 option(CUVS_ANN_BENCH_USE_CUVS_CAGRA "Include cuVS CAGRA in benchmark" ON)
 option(CUVS_ANN_BENCH_USE_CUVS_BRUTE_FORCE "Include cuVS brute force knn in benchmark" ON)
+option(CUVS_ANN_BENCH_USE_CUVS_CERTEX "Include cuVS CertEx (exact search) in benchmark" ON)
 option(CUVS_ANN_BENCH_USE_CUVS_CAGRA_HNSWLIB "Include cuVS CAGRA with HNSW search in benchmark" ON)
 option(CUVS_ANN_BENCH_USE_HNSWLIB "Include hnsw algorithm in benchmark" ON)
 option(CUVS_ANN_BENCH_USE_GGNN "Include ggnn algorithm in benchmark" OFF)
@@ -92,6 +93,7 @@ if(BUILD_CPU_ONLY)
   set(CUVS_ANN_BENCH_USE_CUVS_IVF_RABITQ OFF)
   set(CUVS_ANN_BENCH_USE_CUVS_CAGRA OFF)
   set(CUVS_ANN_BENCH_USE_CUVS_BRUTE_FORCE OFF)
+  set(CUVS_ANN_BENCH_USE_CUVS_CERTEX OFF)
   set(CUVS_ANN_BENCH_USE_CUVS_CAGRA_HNSWLIB OFF)
   set(CUVS_ANN_BENCH_USE_GGNN OFF)
   set(CUVS_KNN_BENCH_USE_CUVS_BRUTE_FORCE OFF)
@@ -105,6 +107,7 @@ endif()
 set(CUVS_ANN_BENCH_USE_CUVS OFF)
 if(CUVS_ANN_BENCH_USE_CUVS_IVF_PQ
    OR CUVS_ANN_BENCH_USE_CUVS_BRUTE_FORCE
+   OR CUVS_ANN_BENCH_USE_CUVS_CERTEX
    OR CUVS_ANN_BENCH_USE_CUVS_IVF_FLAT
    OR CUVS_ANN_BENCH_USE_CUVS_IVF_SQ
    OR CUVS_ANN_BENCH_USE_CUVS_IVF_RABITQ
@@ -270,6 +273,12 @@ endif()
 
 if(CUVS_ANN_BENCH_USE_CUVS_BRUTE_FORCE)
   ConfigureAnnBench(NAME CUVS_BRUTE_FORCE PATH src/cuvs/cuvs_benchmark.cu LINKS cuvs)
+endif()
+
+if(CUVS_ANN_BENCH_USE_CUVS_CERTEX)
+  ConfigureAnnBench(
+    NAME CUVS_CERTEX PATH src/cuvs/cuvs_benchmark.cu src/cuvs/cuvs_certex.cu LINKS cuvs
+  )
 endif()
 
 if(CUVS_KNN_BENCH_USE_CUVS_BRUTE_FORCE)

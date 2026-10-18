@@ -9,6 +9,13 @@
 #ifdef CUVS_ANN_BENCH_USE_CUVS_BRUTE_FORCE
 #include "cuvs_wrapper.h"
 #endif
+#ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
+#include "cuvs_certex_wrapper.h"
+extern template class cuvs::bench::cuvs_certex<float>;
+extern template class cuvs::bench::cuvs_certex<half>;
+extern template class cuvs::bench::cuvs_certex<uint8_t>;
+extern template class cuvs::bench::cuvs_certex<int8_t>;
+#endif
 #ifdef CUVS_ANN_BENCH_USE_CUVS_IVF_FLAT
 #include "cuvs_ivf_flat_wrapper.h"
 extern template class cuvs::bench::cuvs_ivf_flat<float, int64_t>;
@@ -76,6 +83,29 @@ void parse_dynamic_batching_params(const nlohmann::json& conf, ParamT& param)
   param.dynamic_batching_k =
     uint32_t(uint32_t(conf.at("k")) * float(conf.value("refine_ratio", 1.0f)));
 }
+
+#ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
+template <typename T>
+void parse_build_param(const nlohmann::json& conf,
+                       typename cuvs::bench::cuvs_certex<T>::build_param& param)
+{
+  if (conf.contains("width")) { param.width = conf.at("width"); }
+  if (conf.contains("anchor_stride")) { param.anchor_stride = conf.at("anchor_stride"); }
+  if (conf.contains("n_lists")) { param.n_lists = conf.at("n_lists"); }
+  if (conf.contains("local_projections")) { param.local_projections = conf.at("local_projections"); }
+  if (conf.contains("host_vectors")) { param.host_vectors = conf.at("host_vectors"); }
+  if (conf.contains("int8_rows")) { param.int8_rows = conf.at("int8_rows"); }
+}
+
+template <typename T>
+void parse_search_param(const nlohmann::json& conf,
+                        typename cuvs::bench::cuvs_certex<T>::search_param& param)
+{
+  if (conf.contains("anchors")) { param.certex_params.anchors = conf.at("anchors"); }
+  if (conf.contains("batch_size")) { param.certex_params.batch_size = conf.at("batch_size"); }
+  if (conf.contains("probe_lists")) { param.certex_params.probe_lists = conf.at("probe_lists"); }
+}
+#endif
 
 #if defined(CUVS_ANN_BENCH_USE_CUVS_IVF_FLAT) || defined(CUVS_ANN_BENCH_USE_CUVS_MG)
 template <typename T, typename IdxT>

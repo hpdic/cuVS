@@ -1,0 +1,29 @@
+name: cuvs_certex
+# Exact search: every configuration returns the exact k nearest neighbors (recall 1.0);
+# the parameters change only the speed and the device memory.
+groups:
+  base:
+    build:
+      width: [0, 59, 123, 251]
+      anchor_stride: [16, 32]
+    search:
+      anchors: [128]
+      probe_lists: [2]
+  lists:
+    build:
+      width: [59, 123]
+      n_lists: [1024]
+      local_projections: [false, true]
+    search:
+      probe_lists: [2]
+  host:
+    build:
+      width: [59, 123]
+      host_vectors: [true]
+    search:
+      anchors: [128]
+  test:
+    build:
+      width: [0]
+    search:
+      anchors: [128]
