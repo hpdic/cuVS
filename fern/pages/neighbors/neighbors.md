@@ -9,6 +9,7 @@ Use these guides for NVIDIA cuVS nearest-neighbor indexing APIs, from exact sear
 - [All-neighbors](/user-guide/api-guides/indexing-guide/all-neighbors): compute all-neighbors graph structures.
 - [Brute-force](/user-guide/api-guides/indexing-guide/brute-force): compare every query against every vector for exact nearest-neighbor search.
 - [CAGRA](/user-guide/api-guides/indexing-guide/cagra): build and search GPU-optimized graph indexes.
+- [CertEx](/user-guide/api-guides/indexing-guide/certex): exact nearest-neighbor search that verifies only the vectors a certified bound cannot exclude.
 - [IVF-Flat](/user-guide/api-guides/indexing-guide/ivf-flat): partition vectors into inverted-file lists while storing full-precision vectors.
 - [IVF-PQ](/user-guide/api-guides/indexing-guide/ivf-pq): combine inverted-file partitioning with product quantization for compact indexes.
 - [Multi-GPU](/user-guide/api-guides/indexing-guide/multi-gpu): distribute supported nearest-neighbor indexes across multiple GPUs.

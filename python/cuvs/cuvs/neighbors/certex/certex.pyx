@@ -183,10 +183,12 @@ cdef class Index:
 
     @property
     def trained(self):
+        """Whether the index holds a built index."""
         return self.trained
 
     @property
     def size(self):
+        """Number of vectors added (ids 0 to size - 1; removed vectors keep their ids)."""
         cdef int64_t n = 0
         if self.trained:
             check_cuvs(cuvsCertexIndexGetSize(self.index, &n))
@@ -194,6 +196,7 @@ cdef class Index:
 
     @property
     def dim(self):
+        """Dimension of the vectors."""
         cdef int64_t d = 0
         if self.trained:
             check_cuvs(cuvsCertexIndexGetDim(self.index, &d))

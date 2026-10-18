@@ -26,6 +26,7 @@ These pages are generated from the Python and Cython sources under `python/cuvs/
 - [All Neighbors](/api-reference/python-api-neighbors-all-neighbors)
 - [Brute Force](/api-reference/python-api-neighbors-brute-force)
 - [Cagra](/api-reference/python-api-neighbors-cagra)
+- [Certex](/api-reference/python-api-neighbors-certex)
 - [Filters](/api-reference/python-api-neighbors-filters)
 - [HNSW](/api-reference/python-api-neighbors-hnsw)
 - [IVF Flat](/api-reference/python-api-neighbors-ivf-flat)

@@ -29,6 +29,7 @@ These pages are generated from the documented public headers in the cuVS source 
 - [All Neighbors](/api-reference/c-api-neighbors-all-neighbors)
 - [Brute Force](/api-reference/c-api-neighbors-brute-force)
 - [Cagra](/api-reference/c-api-neighbors-cagra)
+- [Certex](/api-reference/c-api-neighbors-certex)
 - [Common](/api-reference/c-api-neighbors-common)
 - [HNSW](/api-reference/c-api-neighbors-hnsw)
 - [IVF Flat](/api-reference/c-api-neighbors-ivf-flat)
