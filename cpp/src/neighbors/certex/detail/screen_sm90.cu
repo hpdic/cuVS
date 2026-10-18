@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * Copyright 2026 Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -190,12 +195,19 @@ __global__ __launch_bounds__(kThreads, 2) void tile_kernel(int M,
     FullBar::wait(&smem.full[stage], rstate.phase());
     warpgroup_fence_operand(tCrC);
     warpgroup_arrive();
-    // the first product of a database tile overwrites the accumulators (scale-out zero), which
-    // gives the same sums as clearing them first, without a select per accumulator
-    CUTE_UNROLL
-    for (int k = 0; k < size<2>(tCrA); ++k) {
-      mma.accumulate_ = (kb == 0 && k == 0) ? GMMA::ScaleOut::Zero : GMMA::ScaleOut::One;
-      gemm(mma, tCrA(_, _, k, stage), tCrB(_, _, k, stage), tCrC);
+    if constexpr (kAnchor) {
+      // the anchor pass keeps the cleared product and the division by k_tiles: with scale-out zero
+      // and counters it takes twice as long (BIGANN-200M m = 59: 36.3 ms against 18.2 ms a batch)
+      if (it % k_tiles == 0) { clear(tCrC); }
+      gemm(mma, tCrA(_, _, _, stage), tCrB(_, _, _, stage), tCrC);
+    } else {
+      // the first product of a database tile overwrites the accumulators (scale-out zero), which
+      // gives the same sums as clearing them first, without a select per accumulator
+      CUTE_UNROLL
+      for (int k = 0; k < size<2>(tCrA); ++k) {
+        mma.accumulate_ = (kb == 0 && k == 0) ? GMMA::ScaleOut::Zero : GMMA::ScaleOut::One;
+        gemm(mma, tCrA(_, _, k, stage), tCrB(_, _, k, stage), tCrC);
+      }
     }
     warpgroup_commit_batch();
     warpgroup_wait<0>();
@@ -208,11 +220,18 @@ __global__ __launch_bounds__(kThreads, 2) void tile_kernel(int M,
       issue(it + kPipe, ws);
       ++wstate;
     }
-    const bool last = kb == k_tiles - 1;
-    const int t     = blockIdx.x + ti * G;  // the database tile of this iteration
-    if (++kb == k_tiles) {
-      kb = 0;
-      ++ti;
+    bool last;
+    int t;  // the database tile of this iteration
+    if constexpr (kAnchor) {
+      last = it % k_tiles == k_tiles - 1;
+      t    = blockIdx.x + (it / k_tiles) * G;
+    } else {
+      last = kb == k_tiles - 1;
+      t    = blockIdx.x + ti * G;
+      if (++kb == k_tiles) {
+        kb = 0;
+        ++ti;
+      }
     }
     if (!last) { continue; }
 
@@ -575,6 +594,17 @@ auto device_major() -> int
   return v;
 }
 
+}  // namespace
+
+void require_supported_device()
+{
+  if (device_major() < 8) {
+    throw std::invalid_argument("certex: needs a GPU of compute capability 8.0 or later");
+  }
+}
+
+namespace {
+
 /**
  * The kernel that runs: an explicit choice, the override, or the best one for the device. The
  * TMA and WGMMA kernels exist for compute capability 9.0 (sm_90a) only; every other GPU of
@@ -582,6 +612,7 @@ auto device_major() -> int
  */
 auto resolve(screen_kernel kernel, int row_len, int64_t n_rows = 0) -> screen_kernel
 {
+  require_supported_device();
   if (kernel == screen_kernel::automatic) { kernel = kernel_override.load(); }
   const bool hopper = device_major() == 9;
   if (kernel == screen_kernel::automatic) {

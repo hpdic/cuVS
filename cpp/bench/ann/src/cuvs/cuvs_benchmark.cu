@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2023-2026, NVIDIA CORPORATION.
+ * SPDX-FileCopyrightText: Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -75,8 +75,8 @@ auto create_algo(const std::string& algo_name,
   if constexpr (std::is_same_v<T, uint8_t>) {}
 
 #ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
-  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> ||
-                std::is_same_v<T, uint8_t> || std::is_same_v<T, int8_t>) {
+  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> || std::is_same_v<T, uint8_t> ||
+                std::is_same_v<T, int8_t>) {
     if (algo_name == "cuvs_certex") {
       typename cuvs::bench::cuvs_certex<T>::build_param param;
       parse_build_param<T>(conf, param);
@@ -169,8 +169,8 @@ auto create_search_param(const std::string& algo_name, const nlohmann::json& con
   }
 #endif
 #ifdef CUVS_ANN_BENCH_USE_CUVS_CERTEX
-  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> ||
-                std::is_same_v<T, uint8_t> || std::is_same_v<T, int8_t>) {
+  if constexpr (std::is_same_v<T, float> || std::is_same_v<T, half> || std::is_same_v<T, uint8_t> ||
+                std::is_same_v<T, int8_t>) {
     if (algo_name == "cuvs_certex") {
       auto param = std::make_unique<typename cuvs::bench::cuvs_certex<T>::search_param>();
       parse_search_param<T>(conf, *param);

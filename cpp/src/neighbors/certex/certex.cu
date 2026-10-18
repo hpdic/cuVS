@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2026, Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -643,6 +648,7 @@ auto build_from(raft::resources const& res, index_params const& params, Src& src
 {
   cuvs::common::nvtx::range<cuvs::common::nvtx::domain::cuvs> fun_scope(
     "certex::build(%zu, %zu)", size_t(src.n), size_t(src.d));
+  detail::require_supported_device();
   check_metric(params.metric);
   RAFT_EXPECTS(params.anchor_stride >= 1, "anchor_stride must be positive");
   RAFT_EXPECTS(!params.local_projections || params.n_lists > 0,

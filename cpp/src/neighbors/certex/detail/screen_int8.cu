@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2026, Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -260,6 +265,7 @@ auto screen_int8(const int8_t* q_codes,
                  Filter filter,
                  cudaStream_t stream) -> int
 {
+  require_supported_device();
   if (B == 0 || N == 0) { return 0; }
   if (row_len % kK != 0) {
     throw std::invalid_argument("certex: int8 rows hold a multiple of 64 codes");

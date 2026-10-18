@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2026, Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -10,6 +15,7 @@
 // and sm80, which also runs on Hopper) runs on every shape that it serves.
 
 #include "../../src/neighbors/certex/detail/kernels.hpp"
+#include "certex_device.cuh"
 
 #include <raft/core/device_mdarray.hpp>
 #include <raft/core/device_resources.hpp>

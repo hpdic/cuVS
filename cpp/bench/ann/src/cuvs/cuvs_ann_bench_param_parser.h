@@ -92,7 +92,9 @@ void parse_build_param(const nlohmann::json& conf,
   if (conf.contains("width")) { param.width = conf.at("width"); }
   if (conf.contains("anchor_stride")) { param.anchor_stride = conf.at("anchor_stride"); }
   if (conf.contains("n_lists")) { param.n_lists = conf.at("n_lists"); }
-  if (conf.contains("local_projections")) { param.local_projections = conf.at("local_projections"); }
+  if (conf.contains("local_projections")) {
+    param.local_projections = conf.at("local_projections");
+  }
   if (conf.contains("host_vectors")) { param.host_vectors = conf.at("host_vectors"); }
   if (conf.contains("int8_rows")) { param.int8_rows = conf.at("int8_rows"); }
 }

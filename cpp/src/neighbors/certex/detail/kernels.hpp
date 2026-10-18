@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2026, Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -14,7 +19,8 @@
 #include <cstdint>
 #include <stdexcept>
 
-#include <cuvs/core/cuda_fp16.hpp>  // __half with default visibility, as in cuVS
+#include <cuvs/core/cuda_fp16.hpp>  // first: __half with default visibility, as in cuVS
+
 #include <cuda_runtime.h>
 
 namespace raft {
@@ -80,6 +86,13 @@ enum class screen_kernel {
  * and benchmarks can run the sm80 kernels on a Hopper GPU. Not part of the public interface.
  */
 void set_kernel_override(screen_kernel kernel);
+
+/**
+ * Throws std::invalid_argument unless the current device has compute capability 8.0 or later: the
+ * screening kernels use mma.sync (sm_80) or TMA and WGMMA (sm_90a), and on older GPUs they would
+ * compile to empty bodies.
+ */
+void require_supported_device();
 
 /**
  * Certified pass: for every query row i < B and database row j < N, keep the pair if the fp32

@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2026, Dongfang Zhao <dzhao@cs.washington.edu>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -115,6 +120,21 @@ void check(Case c)
 }
 
 }  // namespace
+
+// Skip every test on a GPU older than compute capability 8.0, which CertEx does not support.
+class CertexDeviceEnvironment : public ::testing::Environment {
+ public:
+  void SetUp() override
+  {
+    int dev = 0, major = 0;
+    cudaGetDevice(&dev);
+    cudaDeviceGetAttribute(&major, cudaDevAttrComputeCapabilityMajor, dev);
+    if (major < 8) { GTEST_SKIP() << "CertEx needs a GPU of compute capability 8.0 or later"; }
+  }
+};
+
+const auto* const certex_device_environment =
+  ::testing::AddGlobalTestEnvironment(new CertexDeviceEnvironment);
 
 TEST(CertexC, Plain) { check({0, false, false, false}); }
 TEST(CertexC, Lists) { check({32, false, false, false}); }
