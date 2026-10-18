@@ -5,6 +5,7 @@
 # cmake-format: on
 #
 add_subdirectory(brute_force)
+add_subdirectory(certex)
 add_subdirectory(cagra)
 add_subdirectory(hnsw)
 add_subdirectory(ivf_flat)

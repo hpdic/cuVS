@@ -218,6 +218,27 @@ ConfigureTest(
 )
 
 ConfigureTest(
+  NAME NEIGHBORS_ANN_CERTEX_TEST
+  PATH neighbors/ann_certex/test_float.cu
+       neighbors/ann_certex/test_half.cu
+       neighbors/ann_certex/test_int8_t.cu
+       neighbors/ann_certex/test_uint8_t.cu
+       neighbors/ann_certex/test_updates.cu
+       neighbors/ann_certex/test_sm80.cu
+       neighbors/ann_certex/test_shards.cu
+       neighbors/ann_certex/test_tune.cu
+  GPUS 1
+  PERCENT 100
+)
+
+ConfigureTest(
+  NAME NEIGHBORS_CERTEX_KERNELS_TEST
+  PATH neighbors/certex_kernels.cu
+  GPUS 1
+  PERCENT 100
+)
+
+ConfigureTest(
   NAME CORE_ROARING_ALLOWLIST_TEST
   PATH neighbors/roaring_allowlist.cu
   ADDITIONAL_DEP cuco::cuco

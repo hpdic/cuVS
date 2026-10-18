@@ -1466,6 +1466,14 @@ if(NOT BUILD_CPU_ONLY)
     src/neighbors/ball_cover/detail/ball_cover/registers_pass_two.cu
     src/neighbors/brute_force.cu
     src/neighbors/brute_force_serialize.cu
+    src/neighbors/certex/certex.cu
+    src/neighbors/certex/certex_serialize.cu
+    src/neighbors/certex/certex_shards.cu
+    src/neighbors/certex/certex_tune.cu
+    src/neighbors/certex/detail/screen_sm90.cu
+    src/neighbors/certex/detail/screen_pingpong_sm90.cu
+    src/neighbors/certex/detail/screen_sm80.cu
+    src/neighbors/certex/detail/screen_int8.cu
     src/neighbors/cagra.cpp
     ${cagra_build_inst_files}
     ${cagra_extend_inst_files}

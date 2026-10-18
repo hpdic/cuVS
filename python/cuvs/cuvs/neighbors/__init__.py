@@ -5,6 +5,7 @@
 from cuvs.neighbors import (
     all_neighbors,
     brute_force,
+    certex,
     cagra,
     filters,
     ivf_flat,
@@ -19,6 +20,7 @@ from .refine import refine
 
 __all__ = [
     "brute_force",
+    "certex",
     "cagra",
     "filters",
     "ivf_flat",
