@@ -18,7 +18,8 @@
 
 namespace cuvs::bench {
 
-/** CertEx: exact k nearest neighbors by certified exclusion (every search returns the exact top k). */
+/** CertEx: exact k nearest neighbors by certified exclusion (every search returns the exact top k).
+ */
 template <typename T>
 class cuvs_certex : public algo<T>, public algo_gpu {
  public:
