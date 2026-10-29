@@ -600,24 +600,20 @@ struct blob_pinned {
     if (ptr_ == nullptr) {
       void* ptr = reinterpret_cast<void*>(blob_.data());
 #ifndef BUILD_CPU_ONLY
-      int flags       = cudaHostRegisterDefault;
-      auto error_code = cudaSuccess;
+      // Never register a file-backed mapping: ensure data is copied into anonymous memory first
       if (!blob_.is_in_memory()) {
-        flags      = cudaHostRegisterIoMemory | cudaHostRegisterReadOnly;
-        error_code = cudaHostRegister(ptr, blob_.size(), flags);
-        if (error_code == cudaErrorNotSupported) {
-          // Sometimes read-only is not supported
-          flags      = cudaHostRegisterIoMemory;
-          error_code = cudaHostRegister(ptr, blob_.size(), error_code);
-        }
-      } else {
-        error_code = cudaHostRegister(ptr, blob_.size(), cudaHostRegisterDefault);
-      }
-      if (error_code == cudaErrorInvalidValue && (!blob_.is_in_memory() || blob_.is_hugepage())) {
         auto hugepage =
           (blob_.is_hugepage() && blob_.is_in_memory()) ? HugePages::kAsk : HugePages::kDisable;
         auto file = std::move(blob_).release();
         blob_     = blob_mmap<T>{std::move(file), true, hugepage};
+        return data();
+      }
+      int flags       = cudaHostRegisterDefault;
+      auto error_code = cudaHostRegister(ptr, blob_.size(), flags);
+      if (error_code == cudaErrorInvalidValue && blob_.is_hugepage()) {
+        auto hugepage = HugePages::kDisable;
+        auto file     = std::move(blob_).release();
+        blob_         = blob_mmap<T>{std::move(file), true, hugepage};
         return data();
       }
       if (error_code != cudaSuccess) {
